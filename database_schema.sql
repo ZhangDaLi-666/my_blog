@@ -1,0 +1,18 @@
+-- Database schema for Shanghai Xingjiao Education news scraper
+
+CREATE DATABASE IF NOT EXISTS shxj_news
+  DEFAULT CHARACTER SET utf8mb4
+  DEFAULT COLLATE utf8mb4_unicode_ci;
+
+USE shxj_news;
+
+CREATE TABLE IF NOT EXISTS news_articles (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  title VARCHAR(512) NOT NULL,
+  url VARCHAR(512) NOT NULL,
+  content LONGTEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uniq_news_articles_url (url)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -12,3 +12,12 @@ node_modules
 
 # Hugo
 public
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.log
+.venv/
+.env
