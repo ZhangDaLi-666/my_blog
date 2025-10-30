@@ -1,0 +1,87 @@
+<!-- 鼠标点击烟花特效 -->
+<script src="https://cdn.jsdelivr.net/npm/mouse-firework@latest/dist/index.umd.js"></script>
+//鼠标拖尾效果
+<script src="https://unpkg.com/cursor-effects@latest/dist/browser.js"></script>
+//背景效果
+<div id="tsparticles"></div>
+<script src="https://cdn.jsdelivr.net/npm/@tsparticles/preset-snow@3/tsparticles.preset.snow.bundle.min.js"></script>
+
+<!-- 自定义蓝色光标样式 -->
+<style>
+  * {
+    cursor: none !important;
+  }
+  .custom-cursor {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(0, 200, 255, 0.8);
+    box-shadow: 0 0 15px rgba(0, 200, 255, 0.8);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: width 0.1s, height 0.1s, background 0.2s;
+    z-index: 9999;
+  }
+</style>
+
+<div class="custom-cursor"></div>
+
+<script>
+  // 点击烟花特效
+  firework({
+    excludeElements: ["a"],
+    particles: [
+      {
+        shape: "circle",
+        move: "emit",
+        easing: "easeOutExpo",
+        colors: [
+          "rgba(0,191,255,0.9)",
+          "rgba(135,206,250,0.9)",
+          "rgba(123,104,238,0.9)",
+          "rgba(186,85,211,0.9)",
+          "rgba(221,160,221,0.9)",
+          "rgba(238,130,238,0.9)",
+          "rgba(255,182,193,0.9)",
+          "rgba(240,248,255,0.9)",
+
+        ],
+        number: 50,
+        duration: [1200, 1800],
+        shapeOptions: {
+          radius: [5, 10],
+        },
+        moveOptions: {
+          emitRadius: [50, 100],
+        },
+      },
+    ],
+  });
+
+  // 自定义蓝色光标移动逻辑
+  const cursor = document.querySelector(".custom-cursor");
+  document.addEventListener("mousemove", (e) => {
+    cursor.style.left = e.clientX + "px";
+    cursor.style.top = e.clientY + "px";
+  });
+  //拖尾
+  new cursoreffects.fairyDustCursor({
+    colors: ["#00aaff", "#ffffff", "#88ffff"],
+    fairySymbol: ["❄"]
+  });
+  //背景下雪
+  (async () => {
+    await loadSnowPreset(tsParticles);
+    await tsParticles.load({
+      id: "tsparticles",
+      options: {
+        preset: "snow",
+        background:{
+          color:"#000000",
+          opacity:0
+        }
+      },
+    });
+  })();
+</script>
