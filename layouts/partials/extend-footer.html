@@ -86,3 +86,162 @@
   })();
 </script>
 
+<!-- 自定义鼠标右键菜单 -->
+<style>
+  /* 菜单样式与淡入动画 */
+  .custom-context-menu {
+    position: absolute;
+    background: linear-gradient(180deg, rgba(40,40,40,0.95), rgba(24,24,24,0.95));
+    color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.45);
+    padding: 6px 0;
+    font-size: 14px;
+    z-index: 10000; /* 比菜单低一点，确保可见光标在上 */
+    pointer-events: auto;
+    min-width: 180px;
+    overflow: hidden;
+    transform-origin: top left;
+    animation: menuFadeIn 160ms ease;
+  }
+
+  @keyframes menuFadeIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  .custom-context-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .custom-context-menu li {
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background 0.14s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .custom-context-menu li:hover {
+    background: rgba(255,255,255,0.04);
+  }
+
+  /* 确保自定义光标在菜单之上可见（光标元素保留 pointer-events:none） */
+  .custom-cursor {
+    z-index: 10001 !important;
+  }
+</style>
+
+<script>
+(function(){
+  // 辅助：移除已有菜单
+  function removeMenu() {
+    const old = document.querySelector('.custom-context-menu');
+    if (old) old.remove();
+  }
+
+  // 在右键触发时创建菜单
+  document.addEventListener('contextmenu', function (event) {
+    event.preventDefault();
+
+    removeMenu();
+
+    // 尝试读取视觉光标（你的 .custom-cursor）
+    const cursor = document.querySelector('.custom-cursor');
+    // fallback 使用 event.clientX/Y
+    let cursorX = event.clientX;
+    let cursorY = event.clientY;
+    if (cursor) {
+      const rect = cursor.getBoundingClientRect();
+      // rect.left/top 是元素实际位置，rect.width/height 用于取中心点
+      cursorX = rect.left + rect.width / 2;
+      cursorY = rect.top + rect.height / 2;
+    }
+
+    // 创建菜单 DOM
+    const menu = document.createElement('div');
+    menu.className = 'custom-context-menu';
+    menu.innerHTML = `
+      <ul>
+        <li data-action="home">🏠 返回首页</li>
+        <li data-action="back">⬅️ 返回上一页</li>
+        <li data-action="copy">🔗 复制本页链接</li>
+        <li data-action="about">💡 关于本站</li>
+      </ul>
+    `;
+
+    document.body.appendChild(menu);
+
+    // 先放在视口内预计位置，然后微调防溢出
+    // 我们希望菜单从光标的下方略微偏右显示（光标上方可见）
+    const preferredOffsetX = 12; // 水平偏移（向右）
+    const preferredOffsetY = 18; // 垂直偏移（向下）
+
+    // 需要等待浏览器渲染以获取菜单尺寸
+    requestAnimationFrame(() => {
+      const mRect = menu.getBoundingClientRect();
+      let left = Math.round(cursorX + preferredOffsetX);
+      let top  = Math.round(cursorY + preferredOffsetY);
+
+      // 如果菜单会超出右边界，改放到左侧
+      if (left + mRect.width > window.innerWidth - 8) {
+        left = Math.max(8, cursorX - mRect.width - preferredOffsetX);
+      }
+      // 如果菜单会超出底部，改放到上方（但仍保留光标在上）
+      if (top + mRect.height > window.innerHeight - 8) {
+        top = Math.max(8, cursorY - mRect.height - preferredOffsetY);
+      }
+
+      menu.style.left = left + 'px';
+      menu.style.top  = top  + 'px';
+    });
+
+    // 菜单项事件（事件委托）
+    menu.addEventListener('click', function (ev) {
+      const li = ev.target.closest('li');
+      if (!li) return;
+      const action = li.getAttribute('data-action');
+      removeMenu(); // 点击后移除
+
+      if (action === 'home') {
+        window.location.href = '/';
+      } else if (action === 'back') {
+        history.back();
+      } else if (action === 'copy') {
+        // 复制，并显示简短提示
+        navigator.clipboard?.writeText(window.location.href)
+          .then(() => {
+            // 简易提示（可按需替换为更漂亮的 toast）
+            const tip = document.createElement('div');
+            tip.textContent = '已复制链接';
+            Object.assign(tip.style, {
+              position: 'fixed',
+              left: '50%',
+              top: '24px',
+              transform: 'translateX(-50%)',
+              background: 'rgba(0,0,0,0.7)',
+              color: '#fff',
+              padding: '6px 12px',
+              borderRadius: '6px',
+              zIndex: 12000,
+              fontSize: '13px'
+            });
+            document.body.appendChild(tip);
+            setTimeout(()=> tip.remove(), 900);
+          })
+          .catch(()=> alert('复制失败，请手动复制链接'));
+      } else if (action === 'about') {
+        alert('右键菜单来自 Blowfish 自定义！');
+      }
+    });
+
+    // 点击其他地方、滚动或窗口大小变化时关闭菜单
+    const closeHandler = () => removeMenu();
+    document.addEventListener('click', closeHandler, { once: true });
+    window.addEventListener('scroll', closeHandler, { once: true });
+    window.addEventListener('resize', closeHandler, { once: true });
+  });
+})();
+</script>
+
