@@ -47,10 +47,14 @@
 #  pageRef = "categories"
 #  weight = 20
 
-#[[main]]
-#  name = "Tags"
+[[main]]
+#  name = "Github"
+ url = "https://github.com/ZhangDaLi-666"
+ identifier = "github"
 #  pageRef = "tags"
-#  weight = 30
+ weight = 10
+ pre = "github"
+ title = "GitHub"
 
 
 # -- Footer Menu --
