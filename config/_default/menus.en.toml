@@ -10,10 +10,10 @@
 # overridden by providing a weight value. The menu will then be
 # ordered by weight from lowest to highest.
 
-#[[main]]
-#  name = "Blog"
-#  pageRef = "posts"
-#  weight = 10
+[[main]]
+ name = "文章"
+ pageRef = "posts"
+ weight = 5
 
 #[[main]]
 #  name = "Parent"
@@ -42,16 +42,19 @@
 #  pageRef = "categories/awesome"
 #  weight = 20
 
-#[[main]]
-#  name = "Categories"
-#  pageRef = "categories"
-#  weight = 20
+[[main]]
+ name = "Categories"
+ pageRef = "categories"
+ weight = 6
+
+ [[main]]
+ name = "tags"
+ pageRef = "tags"
+ weight = 7
 
 [[main]]
-#  name = "Github"
  url = "https://github.com/ZhangDaLi-666"
  identifier = "github"
-#  pageRef = "tags"
  weight = 10
  pre = "github"
  title = "GitHub"
