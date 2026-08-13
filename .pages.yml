@@ -1,0 +1,76 @@
+media:
+  input: static/uploads
+  output: /uploads
+  categories: [image]
+  extensions: [png, jpg, jpeg, webp, gif]
+  rename: safe
+
+settings:
+  content:
+    merge: true
+  commit:
+    identity: user
+
+content:
+  - name: posts
+    label: 随笔
+    type: collection
+    path: content/posts
+    format: yaml-frontmatter
+    subfolders: false
+    filename: "{year}-{month}-{day}-{hour}-{minute}-{second}.md"
+
+    operations:
+      create: true
+      rename: false
+      delete: false
+
+    view:
+      fields: [title, date, draft]
+      primary: title
+      sort: [date, title]
+      search: [title, description, tags, categories]
+      default:
+        sort: date
+        order: desc
+
+    fields:
+      - name: title
+        label: 标题
+        type: string
+        required: true
+
+      - name: date
+        label: 日期
+        type: date
+        required: true
+        options:
+          format: "yyyy-MM-dd"
+
+      - name: draft
+        label: 保存为草稿
+        type: boolean
+        default: true
+        description: 开启时不会公开，关闭后保存即可发布。
+
+      - name: description
+        label: 文章简介
+        type: text
+
+      - name: tags
+        label: 标签
+        type: string
+        list: true
+
+      - name: categories
+        label: 分类
+        type: string
+        list: true
+
+      - name: body
+        label: 正文
+        type: rich-text
+        required: true
+        options:
+          format: markdown
+          switcher: true
