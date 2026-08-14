@@ -26,10 +26,10 @@ content:
       delete: false
 
     view:
-      fields: [title, date, draft]
+      fields: [title, date, draft, summary, featureimage]
       primary: title
       sort: [date, title]
-      search: [title, description, tags, categories]
+      search: [title, summary, tags, categories]
       default:
         sort: date
         order: desc
@@ -53,19 +53,63 @@ content:
         default: true
         description: 开启时不会公开，关闭后保存即可发布。
 
-      - name: description
+      - name: summary
         label: 文章简介
         type: text
+        description: 会显示在首页和文章列表卡片上，也会用于搜索引擎简介。
+
+      - name: featureimage
+        label: 封面图片
+        type: image
+        description: 上传或从媒体库选择。保存后会显示在首页卡片和文章顶部。
+        options:
+          publicUrl: https://blog.zhangyang.eu.org
+          categories: [image]
+
+      - name: featureimagecaption
+        label: 封面说明
+        type: string
+        description: 可选；使用大图 Hero 样式时显示在封面下方。
+
+      - name: imagePosition
+        label: 封面焦点位置
+        type: select
+        default: "50% 50%"
+        options:
+          placeholder: 选择裁切时保留的位置
+          values:
+            - name: "50% 50%"
+              label: 居中
+            - name: "50% 20%"
+              label: 偏上（适合人物头像）
+            - name: "50% 80%"
+              label: 偏下
+            - name: "20% 50%"
+              label: 偏左
+            - name: "80% 50%"
+              label: 偏右
 
       - name: tags
         label: 标签
-        type: string
-        list: true
+        type: reference
+        description: 可搜索并选择以前用过的标签；输入新名称后也可以新增。
+        options:
+          collection: posts
+          distinct: tags
+          multiple: true
+          allowCreate: true
+          placeholder: 搜索或新增标签…
 
       - name: categories
         label: 分类
-        type: string
-        list: true
+        type: reference
+        description: 建议只选择少量稳定分类；也可以输入新分类。
+        options:
+          collection: posts
+          distinct: categories
+          multiple: true
+          allowCreate: true
+          placeholder: 搜索或新增分类…
 
       - name: body
         label: 正文

@@ -2,7 +2,7 @@
 title: "我的第一篇文章"
 date: 2026-07-30
 draft: false
-description: "这是我的第一篇 Blowfish 测试文章。"
+summary: "这是我的第一篇 Blowfish 测试文章。"
 tags: ["Blowfish", "测试"]
 categories: ["学习记录"]
 ---
